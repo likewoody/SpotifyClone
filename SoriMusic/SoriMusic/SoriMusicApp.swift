@@ -11,7 +11,7 @@ import SwiftUI
 struct SoriMusicApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            TabControlView()
         }
     }
 }

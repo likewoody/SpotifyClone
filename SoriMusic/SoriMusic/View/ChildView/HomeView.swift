@@ -10,17 +10,14 @@ import SwiftUI
 
 // MARK: HomeView
 struct HomeView: View {
-    
+    /// View Model
     private let vm = HomeViewModel()
     
     /// Category
-    @Environment(\.sizeCategory) private var sizeCategory
+//    @Environment(\.sizeCategory) private var sizeCategory
     @State private var categorySelected: String = "all"
     private let categoryDefaultScale: Double = 1.5
     private let categoryDefaultWidthSize: CGFloat = 70
-    
-    /// Title
-//    let recommendTitle: String = "Recommend for today"
     
     /// Album
     let displayAlbumSize: CGFloat = 175
@@ -29,10 +26,15 @@ struct HomeView: View {
         ScrollView {
             VStack {
                 categoryTopArea
+                    .limitLineAndMiniumScaleFactor()
                 
-                showAlbumLists(title: "Recommend for today")
+                homeContent(title: "Recommend for today")
                 
-                showAlbumLists(title: "Made For Woody Jo")
+                if let name = vm.user?.name {
+                    homeContent(title: "Made For \(name)")
+                }
+                
+                homeContent(title: "Recommend for today")
                 
             }
             .padding()
@@ -46,26 +48,12 @@ struct HomeView: View {
 }
 
 // MARK: extension
-extension ContentSizeCategory {
-    var customMinScaleFactor: CGFloat {
-        switch self {
-        case .extraSmall, .small, .medium:
-            1.0
-        case .large, .extraLarge, .extraExtraLarge:
-            0.8
-        default:
-            0.6
-        }
-    }
-}
-
 // .background 와 .primary의 타입이 달라 ShapeStyle의 customBackground를 하나 만들어준다.
 extension ShapeStyle where Self == Color {
     static var customBackground: Color { Color(UIColor.systemBackground) } // iOS의 기본 배경색
 }
 
 extension HomeView {
-    
     // MARK: Header
     private var categoryTopArea: some View {
         HStack(spacing: 15) {
@@ -97,7 +85,6 @@ extension HomeView {
                         )
                         .padding()
                         .lineLimit(1)
-                        .minimumScaleFactor(sizeCategory.customMinScaleFactor)
                    }
                 }
             }
@@ -105,8 +92,8 @@ extension HomeView {
         }
     }
     
-    // MARK: Body
-    private func showAlbumLists(title: String) -> some View {
+    // MARK: Content
+    private func homeContent(title: String) -> some View {
         VStack(alignment: .leading) {
             Text(title)
                 .font(.title)
